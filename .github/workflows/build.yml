@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: unzip -o KARA-0.13.zip
+      - run: unzip -q KARA-0.14.zip -d "$RUNNER_TEMP/kara"
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -24,11 +24,10 @@ jobs:
       - name: Install Android SDK
         run: sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
       - name: Bundle offline Persian voice and native engine
-        run: python3 persian-caller/scripts/prepare_voice.py
+        run: python3 "$RUNNER_TEMP/kara"/persian-caller/scripts/prepare_voice.py
       - name: Build debug APK
-        run: gradle -p persian-caller --no-daemon :app:assembleDebug
+        run: gradle -p "$RUNNER_TEMP/kara/persian-caller" --no-daemon :app:assembleDebug
       - uses: actions/upload-artifact@v4
         with:
           name: KARA-APK
-          path: persian-caller/app/build/outputs/apk/debug/app-debug.apk
-          
+          path: ${{ runner.temp }}/kara/persian-caller/app/build/outputs/apk/debug/app-debug.apk
