@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: unzip -q KARA-0.14.zip -d "$RUNNER_TEMP/kara"
+      - run: unzip -q KARA-0.16.zip -d "$RUNNER_TEMP/kara"
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
