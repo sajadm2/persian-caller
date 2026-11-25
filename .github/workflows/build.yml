@@ -10,16 +10,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Locate and unpack KARA 0.19
+      - name: Locate and unpack KARA 0.20
         shell: bash
         run: |
           while IFS= read -r -d '' file; do
-            if [[ $(sha256sum < "$file" | cut -d' ' -f1) == 6c9852924d91c8a424b58a8a48fb5c86a94d8745297961cb8cff3dd1275aaf0f ]]; then
+            if [[ $(sha256sum < "$file" | cut -d' ' -f1) == fb21f9a843ae81068c06a3ae55af307d80400a7e7738567ee24ab7c36ce6adf1 ]]; then
               unzip -q "$file" -d "$RUNNER_TEMP/kara"
               exit 0
             fi
           done < <(find . -type f -iname '*.zip' -print0)
-          echo '::error::Upload the original KARA-0.19.zip to this branch and commit it.'
+          echo '::error::Upload the original KARA-0.20.zip to this branch and commit it.'
           exit 1
       - uses: actions/setup-java@v4
         with:
