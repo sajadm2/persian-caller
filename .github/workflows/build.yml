@@ -14,16 +14,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Locate and unpack KARA 0.17
+      - name: Locate and unpack KARA 0.18
         shell: bash
         run: |
           while IFS= read -r -d '' file; do
-            if [[ $(sha256sum < "$file" | cut -d' ' -f1) == 111d416af0958329dbb553cd32928505f128cfa29532c8d8d458e2514160bcde ]]; then
+            if [[ $(sha256sum < "$file" | cut -d' ' -f1) == ae5d32887380420774193dc70e569248b641390522b8b5878dfda98cc81a2361 ]]; then
               unzip -q "$file" -d "$RUNNER_TEMP/kara"
               exit 0
             fi
           done < <(find . -type f -iname '*.zip' -print0)
-          echo '::error::Upload the original KARA-0.17.zip to this branch and commit it.'
+          echo '::error::Upload the original KARA-0.18.zip to this branch and commit it.'
           exit 1
 
       - uses: actions/setup-java@v4
@@ -52,4 +52,3 @@ jobs:
         with:
           name: KARA-APK
           path: ${{ runner.temp }}/kara/persian-caller/app/build/outputs/apk/debug/app-debug.apk
-          
