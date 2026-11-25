@@ -1,53 +1,42 @@
 name: Build APK
-
 on:
   workflow_dispatch:
   push:
     branches: [main, master]
-
 permissions:
   contents: read
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Locate and unpack KARA 0.18
+      - name: Locate and unpack KARA 0.19
         shell: bash
         run: |
           while IFS= read -r -d '' file; do
-            if [[ $(sha256sum < "$file" | cut -d' ' -f1) == ae5d32887380420774193dc70e569248b641390522b8b5878dfda98cc81a2361 ]]; then
+            if [[ $(sha256sum < "$file" | cut -d' ' -f1) == 6c9852924d91c8a424b58a8a48fb5c86a94d8745297961cb8cff3dd1275aaf0f ]]; then
               unzip -q "$file" -d "$RUNNER_TEMP/kara"
               exit 0
             fi
           done < <(find . -type f -iname '*.zip' -print0)
-          echo '::error::Upload the original KARA-0.18.zip to this branch and commit it.'
+          echo '::error::Upload the original KARA-0.19.zip to this branch and commit it.'
           exit 1
-
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '21'
-
       - uses: android-actions/setup-android@v3
         with:
           packages: 'platform-tools'
-
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
-
       - name: Install Android SDK
         run: sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
-
       - name: Bundle offline Persian voice and native engine
-        run: python3 "$RUNNER_TEMP/kara/persian-caller/scripts/prepare_voice.py"
-
+        run: python3 "$RUNNER_TEMP/kara"/persian-caller/scripts/prepare_voice.py
       - name: Build debug APK
         run: gradle -p "$RUNNER_TEMP/kara/persian-caller" --no-daemon :app:assembleDebug
-
       - uses: actions/upload-artifact@v4
         with:
           name: KARA-APK
